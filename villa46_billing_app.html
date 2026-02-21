@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Villa 46 Billing</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+body{
+    font-family:Segoe UI, sans-serif;
+    background:linear-gradient(135deg,#2ecc71,#1abc9c);
+    padding:20px;
+}
+
+.container{
+    max-width:1400px;
+    margin:auto;
+    background:#fff;
+    border-radius:15px;
+    box-shadow:0 20px 60px rgba(0,0,0,0.3);
+    overflow:hidden;
+}
+
+.header{
+    background:linear-gradient(135deg,#2ecc71,#41ccff);
+    color:white;
+    text-align:center;
+    padding:30px;
+}
+
+.header img{
+    height:80px;
+    margin-bottom:10px;
+}
+
+.main-content{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+}
+
+.menu-section{
+    padding:25px;
+    border-right:2px solid #eee;
+    max-height:750px;
+    overflow-y:auto;
+}
+
+.bill-section{
+    padding:25px;
+    background:#f9f9f9;
+}
+
+.section-title{
+    font-size:1.5em;
+    color:#2ecc71;
+    margin-bottom:15px;
+    border-bottom:3px solid #2ecc71;
+    padding-bottom:8px;
+}
+
+.category-title{
+    margin:20px 0 10px;
+    color:#1abc9c;
+    font-weight:bold;
+}
+
+.menu-item{
+    display:flex;
+    justify-content:space-between;
+    padding:10px;
+    margin-bottom:8px;
+    background:#fff;
+    border:1px solid #ddd;
+    border-radius:8px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.menu-item:hover{
+    transform:translateX(5px);
+    box-shadow:0 4px 12px rgba(0,0,0,0.1);
+}
+
+.item-price{
+    font-weight:bold;
+    color:#2ecc71;
+}
+
+.bill-items{
+    background:white;
+    padding:15px;
+    border-radius:8px;
+    min-height:250px;
+    max-height:400px;
+    overflow-y:auto;
+}
+
+.bill-item{
+    display:flex;
+    justify-content:space-between;
+    padding:8px 0;
+    border-bottom:1px solid #eee;
+}
+
+.qty-btn{
+    background:#2ecc71;
+    color:white;
+    border:none;
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    cursor:pointer;
+}
+
+.remove-btn{
+    background:#e74c3c;
+    color:white;
+    border:none;
+    padding:4px 8px;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+.summary-row{
+    display:flex;
+    justify-content:space-between;
+    padding:8px 0;
+}
+
+.total{
+    border-top:2px solid #2ecc71;
+    font-weight:bold;
+    font-size:1.2em;
+    color:#2ecc71;
+}
+
+.btn{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border:none;
+    border-radius:8px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.print{background:#27ae60;color:white;}
+.clear{background:#e74c3c;color:white;}
+
+/*@media print {
+
+body * {
+    visibility: hidden;
+}
+
+#bill, #bill * {
+    visibility: visible;
+}
+
+#bill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background: white;
+}
+
+button {
+    display: none !important;
+}
+
+}*/
+@media print {
+
+.container {
+    display: none !important;
+}
+
+#printArea {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 10px;
+    padding: 10px;
+}
+
+.print-bill {
+    border: 1px dashed black;
+    padding: 10px;
+    font-size: 12px;
+}
+
+}
+.header {
+    background: linear-gradient(135deg,#2ecc71,#1abc9c);
+    padding: 20px 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header-center {
+    text-align: center;  /* centers text under logo */
+}
+
+.header-center img {
+    height: 80px;
+    width: auto;
+    margin-bottom: 10px; /* space between logo and text */
+}
+
+.header-center h1 {
+    margin: 0;
+    font-size: 28px;
+    color: white;
+}
+
+.header-center p {
+    margin: 0;
+    font-size: 14px;
+    color: #f0f0f0;
+}
+@media print {
+    .bill-section h2.section-title {
+        display: none; /* hides Current Bill title in print */
+    }
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<div class="header">
+    <div class="header-center">
+        <img src="logo.jpeg" alt="Villa Logo">
+        <h1>VILLA 46</h1>
+        <p>Beyond Words</p>
+    </div>
+</div>
+
+<div id="villaInputSection" style="margin-bottom:50px; margin-top:  80px; text-align:center;">
+  <label for="villaName" style="font-weight:bold; font-size:14px; margin-right:10px;">Villa Name:</label>
+  <input type="text" id="villaName" placeholder="Enter Villa Name" 
+         style="padding:6px 10px; border-radius:8px; border:1px solid #2ecc71; font-size:14px; width:200px;">
+</div>
+<div class="main-content">
+
+<!-- MENU -->
+<div class="menu-section">
+<h2 class="section-title">Menu</h2>
+
+<!-- Soups -->
+<div class="category-title">Soups</div>
+<div class="menu-item" onclick="addItem('Roast Pumpkin Soup',2000)">
+<span>Roast Pumpkin Soup</span><span class="item-price">Rs 2000</span></div>
+<div class="menu-item" onclick="addItem('Tomato Soup',2000)">
+<span>Tomato Soup</span><span class="item-price">Rs 2000</span></div>
+<div class="menu-item" onclick="addItem('Sea Food Chowder',2500)">
+<span>Sea Food Chowder</span><span class="item-price">Rs 2500</span></div>
+
+<!-- Starters -->
+<div class="category-title">Starters</div>
+<div class="menu-item" onclick="addItem('Cesar Salad',3000)">
+<span>Cesar Salad(Chicken)</span><span class="item-price">Rs 3000</span></div>
+<div class="menu-item" onclick="addItem('Cesar Salad',3000)">
+<span>Cesar Salad(Prawns)</span><span class="item-price">Rs 3000</span></div>
+<div class="menu-item" onclick="addItem('Prawns Dynamite',3000)">
+<span>Prawns Dynamite</span><span class="item-price">Rs 3000</span></div>
+<div class="menu-item" onclick="addItem('Crispy Calamari',3000)">
+<span>Crispy Calamari</span><span class="item-price">Rs 3000</span></div>
+<div class="menu-item" onclick="addItem('Dumpling Delights',2500)">
+<span>Dumpling Delights</span><span class="item-price">Rs 2500</span></div>
+<div class="menu-item" onclick="addItem('Fried Handallo',2000)">
+<span>Fried Handallo</span><span class="item-price">Rs 2000</span></div>
+
+
+<!-- Mains -->
+<div class="category-title">Mains</div>
+<div class="menu-item" onclick="addItem('Chicken Parmigiana',4000)">
+<span>Chicken Parmigiana</span><span class="item-price">Rs 4000</span></div>
+<div class="menu-item" onclick="addItem('Hikka Prawns',6000)">
+<span>Hikka Prawns</span><span class="item-price">Rs 6000</span></div>
+<div class="menu-item" onclick="addItem('Kalu Pol Pork',5000)">
+<span>Kalu Pol Pork</span><span class="item-price">Rs 5000</span></div>
+<div class="menu-item" onclick="addItem('Seafood Platter',16000)">
+<span>Seafood Platter</span><span class="item-price">Rs 16000</span></div>
+<div class="menu-item" onclick="addItem('Mixed Meat Cheese Kotthu Platter for Two',4000)">
+<span>Mixed Meat Cheese Kotthu Platter for Two</span><span class="item-price">Rs 4000</span></div>
+<div class="menu-item" onclick="addItem('Lobster Carnival',6000)">
+<span>Lobster Carnival</span><span class="item-price">Rs 6000</span></div>
+<div class="menu-item" onclick="addItem('Action BBQ Station',5000)">
+<span>Action BBQ Station</span><span class="item-price">Rs 5000</span></div>
+<div class="menu-item" onclick="addItem('Catch of the Day',16000)">
+<span>Catch of the Day</span><span class="item-price">Rs 16000</span></div>
+
+
+
+<!-- Pasta -->
+<div class="category-title">Pasta</div>
+<div class="menu-item" onclick="addItem('Butter Chicken Pasta',4500)">
+<span>Butter Chicken Pasta</span><span class="item-price">Rs 4500</span></div>
+<div class="menu-item" onclick="addItem('Creamy Seafood Pasta',4500)">
+<span>Creamy Seafood Pasta</span><span class="item-price">Rs 4500</span></div>
+<div class="menu-item" onclick="addItem('Marinara Pasta',3500)">
+<span>Marinara Pasta</span><span class="item-price">Rs 3500</span></div>
+
+<!-- Pizzas -->
+<div class="category-title">Pizzas</div>
+<div class="menu-item" onclick="addItem('Margarita',4500)">
+<span>Margarita</span><span class="item-price">Rs 4500</span></div>
+<div class="menu-item" onclick="addItem('Pollo Picante',5000)">
+<span>Pollo Picante</span><span class="item-price">Rs 5000</span></div>
+<div class="menu-item" onclick="addItem('Frutti di mare',5000)">
+<span>Frutti di mare</span><span class="item-price">Rs 5000</span></div>
+
+<!-- Rice Bowl -->
+<div class="category-title">Rice Bowl</div>
+<div class="menu-item" onclick="addItem('Sri Lankan Rice Curry',1000)">
+<span>Sri Lankan Rice Curry</span><span class="item-price">Rs 4000</span></div>
+<div class="menu-item" onclick="addItem('Indian Rice Bowl',1500)">
+<span>Indian Rice Bowl</span><span class="item-price">Rs 3500</span></div>
+<div class="menu-item" onclick="addItem('Thai Rice Bowl',1500)">
+<span>Thai Rice Bowl</span><span class="item-price">Rs3500</span></div>
+
+<!-- Burgers and Sandwich -->
+<div class="category-title">Burgers and Sandwich</div>
+<div class="menu-item" onclick="addItem('Classic Villa 46 Burger',3500)">
+<span>Classic Villa 46 Burger</span><span class="item-price">Rs 3500</span></div>
+<div class="menu-item" onclick="addItem('Tuna Or Chicken Sandwich',1500)">
+<span>Tuna Or Chicken Sandwich</span><span class="item-price">Rs 2000</span></div>
+<div class="menu-item" onclick="addItem('Villa 46 Signature Sandwich',1500)">
+<span>Villa 46 Signature Sandwich</span><span class="item-price">Rs 3500</span></div>
+
+<!-- Snacks -->
+<div class="category-title">Snacks</div>
+<div class="menu-item" onclick="addItem('Chicken Wings',2000)">
+<span>Chicken Wings</span><span class="item-price">Rs 2000</span></div>
+<div class="menu-item" onclick="addItem('Chicken nuggets',2500)">
+<span>Chicken nuggets</span><span class="item-price">Rs2500</span></div>
+<div class="menu-item" onclick="addItem('Chicken Popcorn',2500)">
+<span>Chicken Popcorn</span><span class="item-price">Rs 2500</span></div>
+<div class="menu-item" onclick="addItem('French Fries',1400)">
+<span>French Fries</span><span class="item-price">Rs 1400</span></div>
+<div class="menu-item" onclick="addItem('Sweet potato fries',1500)">
+<span>Sweet potato fries</span><span class="item-price">Rs 1500</span></div>
+<div class="menu-item" onclick="addItem('Hadallo Fried',2000)">
+<span>Hadallo Fried</span><span class="item-price">Rs 2000</span></div>
+
+
+<!-- Desserts -->
+<div class="category-title">Desserts</div>
+<div class="menu-item" onclick="addItem('Banana Fritters',1500)">
+<span>Banana Fritters</span><span class="item-price">Rs 1500</span></div>
+<div class="menu-item" onclick="addItem('Tropical Fruit Salad',1700)">
+<span>Tropical Fruit Salad</span><span class="item-price">Rs 1700</span></div>
+<div class="menu-item" onclick="addItem('Ice Cream',1000)">
+<span>Ice Cream</span><span class="item-price">Rs 1000</span></div>
+
+<!-- Beverages -->
+<div class="category-title">Beverages</div>
+<div class="menu-item" onclick="addItem('Iced Tea',1000)">
+<span>Iced Tea</span><span class="item-price">Rs 1000</span></div>
+<div class="menu-item" onclick="addItem('Milk Shake',1500)">
+<span>Milk Shake</span><span class="item-price">Rs 1500</span></div>
+
+
+
+</div>
+
+<!-- BILL -->
+<div class="bill-section" id="bill">
+<h2 class="section-title">Bill</h2>
+
+<div class="bill-items" id="billItems">
+<p>No items added</p>
+</div>
+
+<div class="summary-row">
+<span>Subtotal:</span>
+<span id="subtotal">Rs 0.00</span>
+</div>
+
+<div class="summary-row">
+<span>Service Charge (10%):</span>
+<span id="service">Rs 0.00</span>
+</div>
+
+<div class="summary-row total">
+<span>Total:</span>
+<span id="total">Rs 0.00</span>
+</div>
+
+<button class="btn" onclick="saveBill()">Save Bill</button>
+<button class="btn print" onclick="printAllBills()">Print 4 Bills</button>
+<button class="btn clear" onclick="clearBill()">Clear Bill</button>
+
+</div>
+
+</div>
+</div>
+
+<script>
+let billItems = {};
+let savedBills = [];
+const SERVICE_CHARGE = 0.10;
+
+function addItem(name, price) {
+    if (billItems[name]) billItems[name].qty++;
+    else billItems[name] = { price: price, qty: 1 };
+    updateBill();
+}
+
+function updateBill() {
+    const container = document.getElementById("billItems");
+    container.innerHTML = "";
+    let subtotal = 0;
+
+    for (let item in billItems) {
+        let data = billItems[item];
+        let total = data.price * data.qty;
+        subtotal += total;
+
+        container.innerHTML += `
+        <div class="bill-item">
+            <span>${item} x ${data.qty}</span>
+            <span>Rs ${total.toFixed(2)}</span>
+        </div>`;
+    }
+
+    if (subtotal === 0) {
+        container.innerHTML = "<p>No items added</p>";
+    }
+
+    let service = subtotal * SERVICE_CHARGE;
+    let total = subtotal + service;
+
+    document.getElementById("subtotal").innerText = "Rs " + subtotal.toFixed(2);
+    document.getElementById("service").innerText = "Rs " + service.toFixed(2);
+    document.getElementById("total").innerText = "Rs " + total.toFixed(2);
+}
+
+function clearBill() {
+    billItems = {};
+    updateBill();
+}
+
+function getCurrentDateTime() {
+    const now = new Date();
+    const date = now.toLocaleDateString();
+    const time = now.toLocaleTimeString();
+    return `${date} ${time}`;
+}
+
+// -------------------------
+// Save Bill with Logo + Villa on same line + Date/Time
+// -------------------------
+function saveBill() {
+    const villaInput = document.getElementById("villaName").value.trim();
+    const villaName = villaInput || "Villa Unknown";
+function saveBill() {
+    const villaInput = document.getElementById("villaName").value.trim();
+    const villaName = villaInput || "Villa Unknown";
+
+    if (Object.keys(billItems).length === 0) {
+        alert("No items in bill!");
+        return;
+    }
+
+    if (savedBills.length >= 4) {
+        alert("Already saved 4 bills!");
+        return;
+    }
+
+    // Clone the bill
+    const billClone = document.getElementById("bill").cloneNode(true);
+
+    // Remove buttons
+    billClone.querySelectorAll("button").forEach(btn => btn.remove());
+
+    // Remove Current Bill heading
+    const heading = billClone.querySelector("h2.section-title");
+    if (heading) heading.remove(); // this removes "Current Bill" entirely
+
+    // Add logo + villa name in one line
+    const headerDiv = document.createElement("div");
+    headerDiv.style.display = "flex";
+    headerDiv.style.alignItems = "center";
+    headerDiv.style.justifyContent = "space-between";
+    headerDiv.style.marginBottom = "10px";
+
+    const logo = document.createElement("img");
+    logo.src = "logo.jpeg";
+    logo.style.height = "60px";
+    logo.style.marginRight = "10px";
+    headerDiv.appendChild(logo);
+
+    const villaDiv = document.createElement("div");
+    villaDiv.style.fontWeight = "bold";
+    villaDiv.style.fontSize = "18px";
+    villaDiv.style.color = "#41ccff";
+    villaDiv.innerText = "Villa: " + villaName;
+    headerDiv.appendChild(villaDiv);
+
+    billClone.prepend(headerDiv);
+
+    // Add date/time
+    const dateTimeDiv = document.createElement("div");
+    dateTimeDiv.style.textAlign = "right";
+    dateTimeDiv.style.fontSize = "12px";
+    dateTimeDiv.style.marginBottom = "10px";
+    dateTimeDiv.innerText = "Date/Time: " + getCurrentDateTime();
+    billClone.prepend(dateTimeDiv);
+
+    // Save
+    savedBills.push(billClone.innerHTML);
+    alert("Bill Saved (" + savedBills.length + "/4)");
+
+    clearBill();
+}
+    if (Object.keys(billItems).length === 0) {
+        alert("No items in bill!");
+        return;
+    }
+
+    if (savedBills.length >= 4) {
+        alert("Already saved 4 bills!");
+        return;
+    }
+
+    const billClone = document.getElementById("bill").cloneNode(true);
+
+    // Remove buttons for printable bill
+    billClone.querySelectorAll("button").forEach(btn => btn.remove());
+
+    // 1️⃣ Header: Logo + Villa Name in one line
+    const headerDiv = document.createElement("div");
+    headerDiv.style.display = "flex";
+    headerDiv.style.alignItems = "center";
+    headerDiv.style.justifyContent = "space-between";
+    headerDiv.style.marginBottom = "5px";
+
+    // Logo
+    const logo = document.createElement("img");
+    logo.src = "logo.jpeg"; // make sure path is correct
+    logo.style.height = "60px";
+    logo.style.marginRight = "10px";
+    headerDiv.appendChild(logo);
+
+    // Villa Name
+    const villaDiv = document.createElement("div");
+    villaDiv.style.fontWeight = "bold";
+    villaDiv.style.fontSize = "18px";
+    villaDiv.style.color = "#41ccff";
+    villaDiv.innerText = "Villa: " + villaName;
+    headerDiv.appendChild(villaDiv);
+
+    billClone.prepend(headerDiv);
+
+    // 2️⃣ Date/Time below header
+    const dateTimeDiv = document.createElement("div");
+    dateTimeDiv.style.textAlign = "right";
+    dateTimeDiv.style.fontSize = "12px";
+    dateTimeDiv.style.marginBottom = "10px";
+    dateTimeDiv.innerText = "Date/Time: " + getCurrentDateTime();
+    billClone.prepend(dateTimeDiv);
+
+    savedBills.push(billClone.innerHTML);
+
+    alert("Bill Saved (" + savedBills.length + "/4)");
+    clearBill();
+}
+
+function printAllBills() {
+    if (savedBills.length !== 4) {
+        alert("You must save exactly 4 bills first!");
+        return;
+    }
+
+    const printArea = document.getElementById("printArea");
+    printArea.innerHTML = "";
+
+    savedBills.forEach(bill => {
+        printArea.innerHTML += `
+            <div class="print-bill">
+                ${bill}
+            </div>`;
+    });
+
+    window.print();
+    savedBills = []; // reset after printing
+}
+
+</script>
+<div id="printArea"></div>
+</body>
+</html>
