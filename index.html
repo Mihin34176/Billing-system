@@ -56,7 +56,7 @@ body{
     font-size:1.5em;
     color:#2ecc71;
     margin-bottom:15px;
-    border-bottom:3px solid #2ecc71;
+    border-bottom:3px solid #2ec4cc;
     padding-bottom:8px;
 }
 
@@ -227,6 +227,7 @@ button {
         display: none; /* hides Current Bill title in print */
     }
 }
+
 </style>
 </head>
 
@@ -365,6 +366,19 @@ button {
 <span>Iced Tea</span><span class="item-price">Rs 1000</span></div>
 <div class="menu-item" onclick="addItem('Milk Shake',1500)">
 <span>Milk Shake</span><span class="item-price">Rs 1500</span></div>
+<div class="menu-item" onclick="addItem('Beverage (B)',1000)">
+<span>Beverage (B)</span><span class="item-price">Rs 1000</span></div>
+<div class="menu-item" onclick="addItem('Beverage (B)',1500)">
+<span>Beverage (B)</span><span class="item-price">Rs 1500</span></div>
+<div class="menu-item" onclick="addItem('Beverage (RLW)',1000)">
+<span>Beverage (RLW)[</span><span class="item-price">Rs 1000</span></div>
+<div class="menu-item" onclick="addItem('Beverage (WLW)',1500)">
+<span>Beverage (WLW)</span><span class="item-price">Rs 1500</span></div>
+<div class="menu-item" onclick="addItem('Beverage (BLW)',1000)">
+<span>Beverage (BlW)</span><span class="item-price">Rs 1000</span></div>
+<div class="menu-item" onclick="addItem('Beverage (B)',1500)">
+<span>Beverage ()</span><span class="item-price">Rs 1500</span></div>
+
 
 
 
@@ -394,7 +408,7 @@ button {
 </div>
 
 <button class="btn" onclick="saveBill()">Save Bill</button>
-<button class="btn print" onclick="printAllBills()">Print 4 Bills</button>
+<button class="btn print" onclick="printAllBills()">Print Bills</button>
 <button class="btn clear" onclick="clearBill()">Clear Bill</button>
 
 </div>
@@ -407,12 +421,14 @@ let billItems = {};
 let savedBills = [];
 const SERVICE_CHARGE = 0.10;
 
+/* ------------------ ADD ITEM ------------------ */
 function addItem(name, price) {
     if (billItems[name]) billItems[name].qty++;
     else billItems[name] = { price: price, qty: 1 };
     updateBill();
 }
 
+/* ------------------ UPDATE BILL ------------------ */
 function updateBill() {
     const container = document.getElementById("billItems");
     container.innerHTML = "";
@@ -442,140 +458,78 @@ function updateBill() {
     document.getElementById("total").innerText = "Rs " + total.toFixed(2);
 }
 
+/* ------------------ CLEAR BILL ------------------ */
 function clearBill() {
     billItems = {};
     updateBill();
 }
 
+/* ------------------ DATE TIME ------------------ */
 function getCurrentDateTime() {
     const now = new Date();
-    const date = now.toLocaleDateString();
-    const time = now.toLocaleTimeString();
-    return `${date} ${time}`;
+    return now.toLocaleDateString() + " " + now.toLocaleTimeString();
 }
 
-// -------------------------
-// Save Bill with Logo + Villa on same line + Date/Time
-// -------------------------
+/* ------------------ SAVE BILL ------------------ */
 function saveBill() {
-    const villaInput = document.getElementById("villaName").value.trim();
-    const villaName = villaInput || "Villa Unknown";
-function saveBill() {
-    const villaInput = document.getElementById("villaName").value.trim();
-    const villaName = villaInput || "Villa Unknown";
 
     if (Object.keys(billItems).length === 0) {
         alert("No items in bill!");
         return;
     }
 
-    if (savedBills.length >= 4) {
-        alert("Already saved 4 bills!");
-        return;
-    }
+    const villaInput = document.getElementById("villaName").value.trim();
+    const villaName = villaInput || "Villa Unknown";
 
-    // Clone the bill
     const billClone = document.getElementById("bill").cloneNode(true);
 
     // Remove buttons
     billClone.querySelectorAll("button").forEach(btn => btn.remove());
 
-    // Remove Current Bill heading
+    // Remove Bill heading
     const heading = billClone.querySelector("h2.section-title");
-    if (heading) heading.remove(); // this removes "Current Bill" entirely
+    if (heading) heading.remove();
 
-    // Add logo + villa name in one line
+    // Header (Logo + Villa name)
     const headerDiv = document.createElement("div");
     headerDiv.style.display = "flex";
-    headerDiv.style.alignItems = "center";
     headerDiv.style.justifyContent = "space-between";
-    headerDiv.style.marginBottom = "10px";
+    headerDiv.style.alignItems = "center";
+    headerDiv.style.marginBottom = "8px";
 
     const logo = document.createElement("img");
     logo.src = "logo.jpeg";
     logo.style.height = "60px";
-    logo.style.marginRight = "10px";
-    headerDiv.appendChild(logo);
 
     const villaDiv = document.createElement("div");
     villaDiv.style.fontWeight = "bold";
     villaDiv.style.fontSize = "18px";
-    villaDiv.style.color = "#41ccff";
     villaDiv.innerText = "Villa: " + villaName;
-    headerDiv.appendChild(villaDiv);
 
-    billClone.prepend(headerDiv);
-
-    // Add date/time
-    const dateTimeDiv = document.createElement("div");
-    dateTimeDiv.style.textAlign = "right";
-    dateTimeDiv.style.fontSize = "12px";
-    dateTimeDiv.style.marginBottom = "10px";
-    dateTimeDiv.innerText = "Date/Time: " + getCurrentDateTime();
-    billClone.prepend(dateTimeDiv);
-
-    // Save
-    savedBills.push(billClone.innerHTML);
-    alert("Bill Saved (" + savedBills.length + "/4)");
-
-    clearBill();
-}
-    if (Object.keys(billItems).length === 0) {
-        alert("No items in bill!");
-        return;
-    }
-
-    if (savedBills.length >= 4) {
-        alert("Already saved 4 bills!");
-        return;
-    }
-
-    const billClone = document.getElementById("bill").cloneNode(true);
-
-    // Remove buttons for printable bill
-    billClone.querySelectorAll("button").forEach(btn => btn.remove());
-
-    // 1️⃣ Header: Logo + Villa Name in one line
-    const headerDiv = document.createElement("div");
-    headerDiv.style.display = "flex";
-    headerDiv.style.alignItems = "center";
-    headerDiv.style.justifyContent = "space-between";
-    headerDiv.style.marginBottom = "5px";
-
-    // Logo
-    const logo = document.createElement("img");
-    logo.src = "logo.jpeg"; // make sure path is correct
-    logo.style.height = "60px";
-    logo.style.marginRight = "10px";
     headerDiv.appendChild(logo);
-
-    // Villa Name
-    const villaDiv = document.createElement("div");
-    villaDiv.style.fontWeight = "bold";
-    villaDiv.style.fontSize = "18px";
-    villaDiv.style.color = "#41ccff";
-    villaDiv.innerText = "Villa: " + villaName;
     headerDiv.appendChild(villaDiv);
 
-    billClone.prepend(headerDiv);
+    // Date/Time
+    const dateDiv = document.createElement("div");
+    dateDiv.style.textAlign = "right";
+    dateDiv.style.fontSize = "12px";
+    dateDiv.style.marginBottom = "10px";
+    dateDiv.innerText = "Date/Time: " + getCurrentDateTime();
 
-    // 2️⃣ Date/Time below header
-    const dateTimeDiv = document.createElement("div");
-    dateTimeDiv.style.textAlign = "right";
-    dateTimeDiv.style.fontSize = "12px";
-    dateTimeDiv.style.marginBottom = "10px";
-    dateTimeDiv.innerText = "Date/Time: " + getCurrentDateTime();
-    billClone.prepend(dateTimeDiv);
+    billClone.prepend(dateDiv);
+    billClone.prepend(headerDiv);
 
     savedBills.push(billClone.innerHTML);
 
-    alert("Bill Saved (" + savedBills.length + "/4)");
+    alert("Bill Saved Successfully!");
     clearBill();
 }
 
+/* ------------------ PRINT BILLS ------------------ */
 function printAllBills() {
-    if (savedBills.length !== 4) {
-        alert("You must save exactly 4 bills first!");
+
+    if (savedBills.length === 0) {
+        alert("No saved bills to print!");
         return;
     }
 
@@ -590,10 +544,14 @@ function printAllBills() {
     });
 
     window.print();
-    savedBills = []; // reset after printing
+
+    savedBills = [];
 }
 
+
 </script>
+<br>
+<br>
 <div id="printArea"></div>
 </body>
 </html>
